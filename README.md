@@ -1,7 +1,7 @@
 sparklyr: R interface for Apache Spark
 ================
 
-[![Build Status](https://travis-ci.org/rstudio/sparklyr.svg?branch=master)](https://travis-ci.org/rstudio/sparklyr) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/sparklyr)](https://cran.r-project.org/package=sparklyr) [![Join the chat at https://gitter.im/rstudio/sparklyr](https://badges.gitter.im/rstudio/sparklyr.svg)](https://gitter.im/rstudio/sparklyr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/rstudio/sparklyr.svg?branch=master)](https://travis-ci.org/rstudio/sparklyr) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/sparklyr)](https://cran.r-project.org/package=sparklyr) [![codecov](https://codecov.io/gh/rstudio/sparklyr/branch/master/graph/badge.svg)](https://codecov.io/gh/rstudio/sparklyr) [![Join the chat at https://gitter.im/rstudio/sparklyr](https://badges.gitter.im/rstudio/sparklyr.svg)](https://gitter.im/rstudio/sparklyr?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <img src="tools/readme/sparklyr-illustration.png" width=364 height=197 align="right"/>
 
@@ -90,7 +90,7 @@ flights_tbl %>% filter(dep_delay == 2)
     ##  8  2013     1     1     1028           1026         2     1350
     ##  9  2013     1     1     1042           1040         2     1325
     ## 10  2013     1     1     1231           1229         2     1523
-    ## # ... with 6,223 more rows, and 12 more variables: sched_arr_time <int>,
+    ## # ... with more rows, and 12 more variables: sched_arr_time <int>,
     ## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
     ## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
     ## #   minute <dbl>, time_hour <dbl>
@@ -144,7 +144,7 @@ batting_tbl %>%
     ##  8 adamecr01   2015    COL    26    53     4    13
     ##  9 adamecr01   2014    COL     7    15     1     1
     ## 10 adamsac01   1943    NY1    70    32     3     4
-    ## # ... with 2.561e+04 more rows
+    ## # ... with more rows
 
 For additional documentation on using dplyr with Spark see the [dplyr](http://spark.rstudio.com/dplyr.html) section of the sparklyr website.
 
@@ -266,21 +266,21 @@ spark_apply(iris_tbl, function(data) {
 })
 ```
 
-    ## # Source:   table<sparklyr_tmp_16c9a2c40da6d> [?? x 4]
+    ## # Source:   table<sparklyr_tmp_935375c342d> [?? x 4]
     ## # Database: spark_connection
     ##    Sepal_Length Sepal_Width Petal_Length Petal_Width
     ##           <dbl>       <dbl>        <dbl>       <dbl>
-    ##  1     7.988345    6.388345     4.288345    3.088345
-    ##  2     7.788345    5.888345     4.288345    3.088345
-    ##  3     7.588345    6.088345     4.188345    3.088345
-    ##  4     7.488345    5.988345     4.388345    3.088345
-    ##  5     7.888345    6.488345     4.288345    3.088345
-    ##  6     8.288345    6.788345     4.588345    3.288345
-    ##  7     7.488345    6.288345     4.288345    3.188345
-    ##  8     7.888345    6.288345     4.388345    3.088345
-    ##  9     7.288345    5.788345     4.288345    3.088345
-    ## 10     7.788345    5.988345     4.388345    2.988345
-    ## # ... with 140 more rows
+    ##  1      6.05028     4.45028      2.35028     1.15028
+    ##  2      5.85028     3.95028      2.35028     1.15028
+    ##  3      5.65028     4.15028      2.25028     1.15028
+    ##  4      5.55028     4.05028      2.45028     1.15028
+    ##  5      5.95028     4.55028      2.35028     1.15028
+    ##  6      6.35028     4.85028      2.65028     1.35028
+    ##  7      5.55028     4.35028      2.35028     1.25028
+    ##  8      5.95028     4.35028      2.45028     1.15028
+    ##  9      5.35028     3.85028      2.35028     1.15028
+    ## 10      5.85028     4.05028      2.45028     1.05028
+    ## # ... with more rows
 
 You can also group by columns to perform an operation over each group of rows and make use of any package within the closure:
 
@@ -293,7 +293,7 @@ spark_apply(
 )
 ```
 
-    ## # Source:   table<sparklyr_tmp_16c9a477a7eb8> [?? x 6]
+    ## # Source:   table<sparklyr_tmp_93534035286d> [?? x 6]
     ## # Database: spark_connection
     ##      Species         term    estimate  std.error  statistic      p.value
     ##        <chr>        <chr>       <dbl>      <dbl>      <dbl>        <dbl>
@@ -361,16 +361,16 @@ You can show the log using the `spark_log` function:
 spark_log(sc, n = 10)
 ```
 
-    ## 17/07/27 23:10:34 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 87 (/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T//RtmpJO9ujN/file16c9a23decc5.csv MapPartitionsRDD[340] at textFile at NativeMethodAccessorImpl.java:0)
-    ## 17/07/27 23:10:34 INFO TaskSchedulerImpl: Adding task set 87.0 with 1 tasks
-    ## 17/07/27 23:10:34 INFO TaskSetManager: Starting task 0.0 in stage 87.0 (TID 148, localhost, executor driver, partition 0, PROCESS_LOCAL, 6009 bytes)
-    ## 17/07/27 23:10:34 INFO Executor: Running task 0.0 in stage 87.0 (TID 148)
-    ## 17/07/27 23:10:34 INFO HadoopRDD: Input split: file:/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T/RtmpJO9ujN/file16c9a23decc5.csv:0+33313106
-    ## 17/07/27 23:10:34 INFO Executor: Finished task 0.0 in stage 87.0 (TID 148). 1123 bytes result sent to driver
-    ## 17/07/27 23:10:34 INFO TaskSetManager: Finished task 0.0 in stage 87.0 (TID 148) in 129 ms on localhost (executor driver) (1/1)
-    ## 17/07/27 23:10:34 INFO TaskSchedulerImpl: Removed TaskSet 87.0, whose tasks have all completed, from pool 
-    ## 17/07/27 23:10:34 INFO DAGScheduler: ResultStage 87 (count at NativeMethodAccessorImpl.java:0) finished in 0.130 s
-    ## 17/07/27 23:10:34 INFO DAGScheduler: Job 55 finished: count at NativeMethodAccessorImpl.java:0, took 0.132388 s
+    ## 17/08/04 16:28:25 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 72 (/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T//RtmpFAYHsD/file935320c3dc1b.csv MapPartitionsRDD[293] at textFile at NativeMethodAccessorImpl.java:0)
+    ## 17/08/04 16:28:25 INFO TaskSchedulerImpl: Adding task set 72.0 with 1 tasks
+    ## 17/08/04 16:28:25 INFO TaskSetManager: Starting task 0.0 in stage 72.0 (TID 112, localhost, executor driver, partition 0, PROCESS_LOCAL, 6009 bytes)
+    ## 17/08/04 16:28:25 INFO Executor: Running task 0.0 in stage 72.0 (TID 112)
+    ## 17/08/04 16:28:25 INFO HadoopRDD: Input split: file:/var/folders/fz/v6wfsg2x1fb1rw4f6r0x4jwm0000gn/T/RtmpFAYHsD/file935320c3dc1b.csv:0+33313106
+    ## 17/08/04 16:28:25 INFO Executor: Finished task 0.0 in stage 72.0 (TID 112). 1123 bytes result sent to driver
+    ## 17/08/04 16:28:25 INFO TaskSetManager: Finished task 0.0 in stage 72.0 (TID 112) in 119 ms on localhost (executor driver) (1/1)
+    ## 17/08/04 16:28:25 INFO TaskSchedulerImpl: Removed TaskSet 72.0, whose tasks have all completed, from pool 
+    ## 17/08/04 16:28:25 INFO DAGScheduler: ResultStage 72 (count at NativeMethodAccessorImpl.java:0) finished in 0.119 s
+    ## 17/08/04 16:28:25 INFO DAGScheduler: Job 49 finished: count at NativeMethodAccessorImpl.java:0, took 0.122685 s
 
 Finally, we disconnect from Spark:
 
@@ -389,15 +389,15 @@ The latest RStudio [Preview Release](https://www.rstudio.com/products/rstudio/do
 
 Once you've installed the sparklyr package, you should find a new **Spark** pane within the IDE. This pane includes a **New Connection** dialog which can be used to make connections to local or remote Spark instances:
 
-<img src="tools/readme/spark-connect.png" class="screenshot" width=389/>
+<img src="tools/readme/spark-connect.png" class="screenshot" width=389 />
 
 Once you've connected to Spark you'll be able to browse the tables contained within the Spark cluster and preview Spark DataFrames using the standard RStudio data viewer:
 
-<img src="tools/readme/spark-dataview.png" class="screenshot" width=639/>
+<img src="tools/readme/spark-dataview.png" class="screenshot" width=639 />
 
 You can also connect to Spark through [Livy](http://livy.io) through a new connection dialog:
 
-<img src="tools/readme/spark-connect-livy.png" class="screenshot" width=389/>
+<img src="tools/readme/spark-connect-livy.png" class="screenshot" width=389 />
 
 The RStudio IDE features for sparklyr are available now as part of the [RStudio Preview Release](https://www.rstudio.com/products/rstudio/download/preview/).
 
@@ -433,7 +433,7 @@ mtcars_glm
     ## ==============
     ## 
     ## H2ORegressionModel: glm
-    ## Model ID:  GLM_model_R_1501222258016_1 
+    ## Model ID:  GLM_model_R_1501889328459_1 
     ## GLM Model: summary
     ##     family     link                              regularization
     ## 1 gaussian identity Elastic Net (alpha = 0.5, lambda = 0.1013 )
@@ -442,7 +442,7 @@ mtcars_glm
     ##   number_of_predictors_total number_of_active_predictors
     ## 1                          2                           2
     ##   number_of_iterations                                training_frame
-    ## 1                    0 frame_rdd_29_94c9913e0af6e119b3b413e51dad46b6
+    ## 1                    0 frame_rdd_29_b46a799a539033314429552b562a4f68
     ## 
     ## Coefficients: glm coefficients
     ##       names coefficients standardized_coefficients
@@ -505,7 +505,7 @@ copy_to(sc, iris)
     ##  8          5.0         3.4          1.5         0.2  setosa
     ##  9          4.4         2.9          1.4         0.2  setosa
     ## 10          4.9         3.1          1.5         0.1  setosa
-    ## # ... with 140 more rows
+    ## # ... with more rows
 
 ``` r
 spark_disconnect(sc)
