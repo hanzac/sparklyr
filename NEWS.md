@@ -1,7 +1,11 @@
 # Sparklyr 0.7 (UNRELEASE)
 
+- Added support in `spark_connect()` for `yarn-cluster` with
+  hight-availability enabled.
+
 - Added to `ml_random_forest()` the following hyperparameter arguments:
-  `min.info.gain`, `col.sample.rate`, `min.rows`, `impurity`, and `thresholds`. Also added `seed` for reproducibility.
+  `min.info.gain`, `col.sample.rate`, `min.rows`, `impurity`, and 
+  `thresholds`. Also added `seed` for reproducibility.
 
 # Sparklyr 0.6.1 (UNRELEASED)
 
