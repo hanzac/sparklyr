@@ -1,3 +1,15 @@
+spark_yarn_cluster_get_property <- function(yarnSiteXml, rm) {
+  xml2::xml_text(xml2::xml_find_all(
+    yarnSiteXml,
+    paste(
+      "//name[.='",
+      rm,
+      "']/parent::property/value",
+      sep = ""
+    )
+  ))
+}
+
 spark_yarn_cluster_get_gateway <- function() {
   confDir <- Sys.getenv("YARN_CONF_DIR")
   if (nchar(confDir) == 0) {
@@ -16,29 +28,27 @@ spark_yarn_cluster_get_gateway <- function() {
 
   yarnSiteXml <- xml2::read_xml(yarnSite)
 
-  yarnResourceManagerHighAvailabilityId <- xml2::xml_text(xml2::xml_find_all(
+  yarnResourceManagerHighAvailability <- spark_yarn_cluster_get_property(
     yarnSiteXml,
-    "//name[.='yarn.resourcemanager.ha.id']/parent::property/value")
+    "yarn.resourcemanager.ha.enabled"
   )
 
-  mainResourceManager <- "yarn.resourcemanager.address"
-  if (length(yarnResourceManagerHighAvailabilityId) > 0) {
+  if (length(yarnResourceManagerHighAvailability) > 0 &&
+      grepl("TRUE", yarnResourceManagerHighAvailability, ignore.case = TRUE)) {
+
+    rmIDs <- strsplit(spark_yarn_cluster_get_property(yarnSiteXml, "yarn.resourcemanager.ha.rm-ids"), ",")
+
+    # http://<rm http address:port>/ws/v1/cluster/info
+
     mainResourceManager <- paste(
       "yarn.resourcemanager.address.",
       yarnResourceManagerHighAvailabilityId,
       sep = ""
     )
   }
-
-  yarnResourceManagerAddress <- xml2::xml_text(xml2::xml_find_all(
-    yarnSiteXml,
-    paste(
-      "//name[.='",
-      mainResourceManager,
-      "']/parent::property/value",
-      sep = ""
-    )
-  ))
+  else {
+    yarnResourceManagerAddress <- spark_yarn_cluster_get_property(yarnSite, "yarn.resourcemanager.address")
+  }
 
   if (length(yarnResourceManagerAddress) == 0) {
     stop("Yarn Cluster mode uses `yarn.resourcemanager.address` but is not present in yarn-site.xml")
