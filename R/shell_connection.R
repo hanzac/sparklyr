@@ -252,7 +252,7 @@ start_shell <- function(master,
     }
     
     for (name in names(config)) {
-      shell_args <- c(shell_args, "--conf", name + "=" + config[[name]])
+      shell_args <- c(shell_args, "--conf", paste(name, config[[name]], sep="="))
     }
 
     # add environment parameters to arguments
