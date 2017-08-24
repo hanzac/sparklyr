@@ -32,17 +32,17 @@ class BackendChannel(logger: Logger, terminate: () => Unit) {
   }
 
   def init(remote: Boolean): Int = {
+    val conf = new SparkConf()
     if (remote) {
       val anyIpAddress = Array[Byte](0, 0, 0, 0)
       val anyInetAddress = InetAddress.getByAddress(anyIpAddress)
 
-      inetAddress = new InetSocketAddress(anyInetAddress, 8881)
+      inetAddress = new InetSocketAddress(anyInetAddress, conf.getInt("sparklyr.backend.port", 0))
     }
     else {
-      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), 8881)
+      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), conf.getInt("sparklyr.backend.port", 0))
     }
 
-    val conf = new SparkConf()
     bossGroup = new NioEventLoopGroup(conf.getInt("sparklyr.backend.threads", 10))
     val workerGroup = bossGroup
     val handler = new BackendHandler(this, logger, hostContext)
