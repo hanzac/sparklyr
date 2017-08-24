@@ -261,7 +261,7 @@ class Backend {
 
                 val backendPort: Int = backendChannel.init(isRemote)
 
-                logger.log("created the backend")
+                logger.log("created the backend: " + backendPort)
 
                 try {
                   // wait for the end of stdin, then exit
