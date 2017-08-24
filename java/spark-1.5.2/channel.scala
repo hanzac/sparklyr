@@ -36,10 +36,10 @@ class BackendChannel(logger: Logger, terminate: () => Unit) {
       val anyIpAddress = Array[Byte](0, 0, 0, 0)
       val anyInetAddress = InetAddress.getByAddress(anyIpAddress)
 
-      inetAddress = new InetSocketAddress(anyInetAddress, 0)
+      inetAddress = new InetSocketAddress(anyInetAddress, 8881)
     }
     else {
-      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0)
+      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), 8881)
     }
 
     val conf = new SparkConf()
