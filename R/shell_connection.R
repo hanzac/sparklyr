@@ -250,6 +250,10 @@ start_shell <- function(master,
     if (length(packages) > 0) {
       shell_args <- c(shell_args, "--packages", paste(shQuote(packages, type = shQuoteType), collapse=","))
     }
+    
+    for (name in names(config)) {
+      shell_args <- c(shell_args, "--conf", name + "=" + config[[name]])
+    }
 
     # add environment parameters to arguments
     shell_env_args <- Sys.getenv("sparklyr.shell.args")
