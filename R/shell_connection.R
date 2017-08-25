@@ -313,8 +313,9 @@ start_shell <- function(master,
       {
         config[["sparklyr.gateway.address"]] <- tryCatch({
           f <- url("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop")
-          scan(f, what="raw")
+          addr <- scan(f, what="raw")
           close(f)
+          addr
         }, error = function(e) {
           Sys.sleep(1)
           ""
