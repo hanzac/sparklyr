@@ -35,7 +35,12 @@ shell_connection <- function(master,
   # for yarn-cluster we will try to read the yarn config and adjust gateway appropiately
   if (spark_master_is_yarn_cluster(master)) {
     if (is.null(config[["sparklyr.gateway.address"]])) {
-      config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
+      # config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
+      config[["sparklyr.gateway.address"]] <- scan(url("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop"), what="raw")
+      
+      if (is.null(config[["sparklyr.gateway.address"]])) {
+        config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
+      }
     }
 
     if (is.null(config[["sparklyr.shell.deploy-mode"]])) {
@@ -171,6 +176,9 @@ start_shell <- function(master,
 
   if (is.null(gatewayInfo) || gatewayInfo$backendPort == 0)
   {
+    # delete the original gatewayaddr file
+    system2("curl", "-X DELETE \"http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=DELETE&user.name=hadoop\"")
+    
     # read app jar through config, this allows "sparkr-shell" to test sparkr backend
     app_jar <- spark_config_value(config, "sparklyr.app.jar", NULL)
     if (is.null(app_jar)) {
@@ -298,6 +306,21 @@ start_shell <- function(master,
     })
 
     tryCatch({
+      maxTry <- 128
+      i <- 0
+      config[["sparklyr.gateway.address"]] <- ""
+      while (config[["sparklyr.gateway.address"]] == "" && i < maxTry)
+      {
+        config[["sparklyr.gateway.address"]] <- tryCatch({
+          scan(url("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop"), what="raw")
+        }, error = function(e) {
+          Sys.sleep(1)
+          ""
+        })
+        
+        i = i + 1
+      }
+      gatewayAddress <- spark_config_value(config, "sparklyr.gateway.address", "localhost")
       # connect and wait for the service to start
       gatewayInfo <- spark_connect_gateway(gatewayAddress,
                                            gatewayPort,
