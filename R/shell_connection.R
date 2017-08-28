@@ -37,7 +37,10 @@ shell_connection <- function(master,
     if (is.null(config[["sparklyr.gateway.address"]])) {
       # config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
       config[["sparklyr.gateway.address"]] <- tryCatch({
-        scan(url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/")), what="raw")
+        f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
+        addr <- scan(f, what="raw")
+        close(f)
+        addr
       }, error = function(e) {
         NULL
       })
