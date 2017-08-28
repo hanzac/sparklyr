@@ -42,6 +42,8 @@ shell_connection <- function(master,
         close(f)
         addr
       }, error = function(e) {
+        if(!is.null(f))
+          close(f)
         NULL
       })
       
@@ -324,6 +326,8 @@ start_shell <- function(master,
           close(f)
           addr
         }, error = function(e) {
+          if(!is.null(f))
+            close(f)
           Sys.sleep(1)
           ""
         })
