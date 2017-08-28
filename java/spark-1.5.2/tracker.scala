@@ -1,6 +1,6 @@
 package sparklyr
 
-import scala.collection.mutable.{Map, SynchronizedMap, HashMap}
+import scala.collection.mutable.{SynchronizedMap, HashMap}
 import scala.language.existentials
 
 object JVMObjectTracker {

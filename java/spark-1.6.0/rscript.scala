@@ -4,10 +4,7 @@ import java.io.{File, FileWriter}
 import java.util.Arrays
 
 import org.apache.spark._
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql._
 
-import ClassUtils._
 import FileUtils._
 
 class Rscript(logger: Logger) {

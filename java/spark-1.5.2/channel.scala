@@ -1,8 +1,6 @@
 package sparklyr
 
-import java.io.{DataInputStream, DataOutputStream}
-import java.io.{File, FileOutputStream, IOException}
-import java.net.{InetAddress, InetSocketAddress, ServerSocket, Socket}
+import java.net.{InetAddress, InetSocketAddress}
 import java.util.concurrent.TimeUnit
 
 import io.netty.bootstrap.ServerBootstrap
@@ -14,10 +12,6 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder
 import io.netty.handler.codec.bytes.{ByteArrayDecoder, ByteArrayEncoder}
 
 import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.hive.HiveContext
-
-import scala.util.Try
 
 class BackendChannel(logger: Logger, terminate: () => Unit) {
 
@@ -33,17 +27,18 @@ class BackendChannel(logger: Logger, terminate: () => Unit) {
 
   def init(remote: Boolean): Int = {
     val conf = new SparkConf()
+    logger.log(conf.toDebugString)
     if (remote) {
       val anyIpAddress = Array[Byte](0, 0, 0, 0)
       val anyInetAddress = InetAddress.getByAddress(anyIpAddress)
 
-      inetAddress = new InetSocketAddress(anyInetAddress, conf.getInt("sparklyr.backend.port", 0))
+      inetAddress = new InetSocketAddress(anyInetAddress, conf.getInt("spark.lyr.backend.port", 0))
     }
     else {
-      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), conf.getInt("sparklyr.backend.port", 0))
+      inetAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), conf.getInt("spark.lyr.backend.port", 0))
     }
 
-    bossGroup = new NioEventLoopGroup(conf.getInt("sparklyr.backend.threads", 10))
+    bossGroup = new NioEventLoopGroup(conf.getInt("spark.lyr.backend.threads", 10))
     val workerGroup = bossGroup
     val handler = new BackendHandler(this, logger, hostContext)
 

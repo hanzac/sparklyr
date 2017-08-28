@@ -2,11 +2,7 @@ package sparklyr
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
 
-import scala.collection.mutable.HashMap
 import scala.language.existentials
-
-import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
-import io.netty.channel.ChannelHandler.Sharable
 
 import sparklyr.Serializer._
 

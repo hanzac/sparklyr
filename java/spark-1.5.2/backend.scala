@@ -1,20 +1,11 @@
 package sparklyr
 
-import java.io.{DataInputStream, DataOutputStream}
-import java.io.{File, FileOutputStream, IOException}
-import java.net.{InetAddress, InetSocketAddress, ServerSocket, Socket}
-import java.util.concurrent.TimeUnit
+import java.io._
+import java.net._
 
-import io.netty.bootstrap.ServerBootstrap
-import io.netty.channel.{ChannelFuture, ChannelInitializer, EventLoopGroup}
-import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.socket.SocketChannel
-import io.netty.channel.socket.nio.NioServerSocketChannel
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder
-import io.netty.handler.codec.bytes.{ByteArrayDecoder, ByteArrayEncoder}
-
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.hive.HiveContext
 
 import scala.util.Try
@@ -228,6 +219,14 @@ class Backend {
   }
 
   def bind(): Unit = {
+    val conf = new SparkConf()
+    val hdfs = FileSystem.get(new URI("hdfs://ip-10-0-0-220.us-west-2.compute.internal:8020"), new Configuration())
+    val path = new Path("/user/" + conf.get("spark.lyr.user.name") + "/gatewayaddr")
+    val stream = hdfs.create(path)
+    stream.writeBytes(scala.io.Source.fromURL("http://instance-data.us-west-2.compute.internal/latest/meta-data/public-ipv4").mkString)
+    stream.close
+    hdfs.close
+
     logger.log("is waiting for sparklyr client to connect to port " + port)
     val gatewaySocket = gatewayServerSocket.accept()
 

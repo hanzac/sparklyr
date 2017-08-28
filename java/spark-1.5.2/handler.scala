@@ -8,7 +8,6 @@ import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.channel.ChannelHandler.Sharable
 
 import sparklyr.Serializer._
-import sparklyr.StreamHandler._
 
 @Sharable
 class BackendHandler(

@@ -1,15 +1,6 @@
 package sparklyr
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
-
-import org.apache.spark.api.java.{JavaRDD, JavaSparkContext}
-import org.apache.spark.api.r.SerDe
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.catalyst.expressions.{Alias, Expression, NamedExpression, GenericRowWithSchema}
 import org.apache.spark.sql.types._
-import org.apache.spark.sql._
-
-import scala.util.matching.Regex
 
 object SQLUtils {
   def createStructType(fields : Seq[StructField]): StructType = {

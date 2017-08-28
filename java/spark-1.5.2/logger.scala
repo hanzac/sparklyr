@@ -2,7 +2,6 @@ package sparklyr
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 
 class Logger(role: String, id: Int)  {
   def getDate() : String = {
