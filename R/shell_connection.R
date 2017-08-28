@@ -181,7 +181,7 @@ start_shell <- function(master,
   if (is.null(gatewayInfo) || gatewayInfo$backendPort == 0)
   {
     # delete the original gatewayaddr file
-    system2("curl", "-X DELETE \"http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=DELETE&user.name=hadoop\"")
+    DELETE("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=DELETE&user.name=hadoop")
     
     # read app jar through config, this allows "sparkr-shell" to test sparkr backend
     app_jar <- spark_config_value(config, "sparklyr.app.jar", NULL)
