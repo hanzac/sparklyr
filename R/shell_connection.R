@@ -316,7 +316,7 @@ start_shell <- function(master,
       maxTry <- 128
       i <- 0
       config[["sparklyr.gateway.address"]] <- ""
-      while (isTRUE(config[["sparklyr.gateway.address"]] == "" && i < maxTry))
+      while (isTRUE(config["sparklyr.gateway.address"] == "" && i < maxTry))
       {
         config[["sparklyr.gateway.address"]] <- tryCatch({
           f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
@@ -329,7 +329,7 @@ start_shell <- function(master,
         })
         
         i = i + 1
-        print(config[["sparklyr.gateway.address"]])
+        print(config["sparklyr.gateway.address"])
       }
       gatewayAddress <- spark_config_value(config, "sparklyr.gateway.address", "localhost")
       # connect and wait for the service to start
