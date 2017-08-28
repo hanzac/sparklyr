@@ -37,7 +37,7 @@ shell_connection <- function(master,
     if (is.null(config[["sparklyr.gateway.address"]])) {
       # config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
       config[["sparklyr.gateway.address"]] <- tryCatch({
-        content(GET("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop"), "text", , encoding="UTF-8")
+        scan(url("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop"), what="raw")
       }, error = function(e) {
         NULL
       })
@@ -316,7 +316,10 @@ start_shell <- function(master,
       while (isTRUE(config[["sparklyr.gateway.address"]] == "" && i < maxTry))
       {
         config[["sparklyr.gateway.address"]] <- tryCatch({
-          content(GET("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop"), "text", , encoding="UTF-8")
+          f <- url("http://52.42.159.158:14000/webhdfs/v1/user/player/gatewayaddr?op=OPEN&user.name=hadoop")
+          addr <- scan(f, what="raw")
+          close(f)
+          addr
         }, error = function(e) {
           Sys.sleep(1)
           ""
