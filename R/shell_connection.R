@@ -37,7 +37,7 @@ shell_connection <- function(master,
     if (is.null(config[["sparklyr.gateway.address"]])) {
       # config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
       config[["sparklyr.gateway.address"]] <- tryCatch({
-        f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
+        f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
         addr <- scan(f, what="raw")
         close(f)
         addr
@@ -184,7 +184,7 @@ start_shell <- function(master,
   if (is.null(gatewayInfo) || gatewayInfo$backendPort == 0)
   {
     # delete the original gatewayaddr file
-    DELETE(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=DELETE&user.name=hadoop", sep="/"))
+    DELETE(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=DELETE&user.name=hadoop", sep="/"))
     
     # read app jar through config, this allows "sparkr-shell" to test sparkr backend
     app_jar <- spark_config_value(config, "sparklyr.app.jar", NULL)
@@ -316,10 +316,10 @@ start_shell <- function(master,
       maxTry <- 128
       i <- 0
       config[["sparklyr.gateway.address"]] <- ""
-      while (isTRUE(config["sparklyr.gateway.address"] == "" && i < maxTry))
+      while (isTRUE(config[["sparklyr.gateway.address"]] == "" && i < maxTry))
       {
         config[["sparklyr.gateway.address"]] <- tryCatch({
-          f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config["spark.lyr.user.name"], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
+          f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
           addr <- scan(f, what="raw")
           close(f)
           addr
@@ -329,7 +329,7 @@ start_shell <- function(master,
         })
         
         i = i + 1
-        print(config["sparklyr.gateway.address"])
+        print(config[["sparklyr.gateway.address"]])
       }
       gatewayAddress <- spark_config_value(config, "sparklyr.gateway.address", "localhost")
       # connect and wait for the service to start
