@@ -37,7 +37,7 @@ shell_connection <- function(master,
     if (is.null(config[["sparklyr.gateway.address"]])) {
       # config[["sparklyr.gateway.address"]] <- spark_yarn_cluster_get_gateway()
       config[["sparklyr.gateway.address"]] <- tryCatch({
-        f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
+        f <- url(paste("http:/", hdfs_base_url(), "webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
         addr <- scan(f, what="raw")
         close(f)
         addr
@@ -95,6 +95,12 @@ shell_connection <- function(master,
     service = service,
     remote = remote
   )
+}
+
+hdfs_base_url <- function() {
+  yarn_site_data <- read_xml(paste(Sys.getenv("YARN_CONF_DIR"), "yarn-site.xml", sep="/"))
+  rm_host_name <- xml_text(yarn_site_data %>% xml_find_all("//configuration//property//value[..//name//text()='yarn.resourcemanager.hostname']//text()"))
+  paste(rm_host_name, "14000", sep=":")
 }
 
 spark_session_id <- function(app_name, master) {
@@ -186,7 +192,7 @@ start_shell <- function(master,
   if (is.null(gatewayInfo) || gatewayInfo$backendPort == 0)
   {
     # delete the original gatewayaddr file
-    DELETE(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=DELETE&user.name=hadoop", sep="/"))
+    DELETE(paste("http:/", hdfs_base_url(), "webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=DELETE&user.name=hadoop", sep="/"))
     
     # read app jar through config, this allows "sparkr-shell" to test sparkr backend
     app_jar <- spark_config_value(config, "sparklyr.app.jar", NULL)
@@ -321,7 +327,7 @@ start_shell <- function(master,
       while (isTRUE(config[["sparklyr.gateway.address"]] == "" && i < maxTry))
       {
         config[["sparklyr.gateway.address"]] <- tryCatch({
-          f <- url(paste("http://52.42.159.158:14000/webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
+          f <- url(paste("http:/", hdfs_base_url(), "webhdfs/v1/user", config[["spark.lyr.user.name"]], "gatewayaddr?op=OPEN&user.name=hadoop", sep="/"))
           addr <- scan(f, what="raw")
           close(f)
           addr

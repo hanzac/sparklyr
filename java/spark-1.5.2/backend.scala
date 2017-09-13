@@ -7,7 +7,9 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.hive.HiveContext
+import org.json4s.jackson.JsonMethods
 
+import scala.io.Source
 import scala.util.Try
 
 /*
@@ -218,9 +220,15 @@ class Backend {
     }
   }
 
+  def getMasterHostName(): String = {
+    val jobFlowContent = Source.fromFile("/mnt/var/lib/info/job-flow.json").getLines.mkString
+    val jobFlow = JsonMethods.parse(jobFlowContent)
+    (jobFlow \ "masterPrivateDnsName").values.asInstanceOf[String]
+  }
+
   def bind(): Unit = {
     val conf = new SparkConf()
-    val hdfs = FileSystem.get(new URI("hdfs://ip-10-0-0-220.us-west-2.compute.internal:8020"), new Configuration())
+    val hdfs = FileSystem.get(new URI("hdfs://" + getMasterHostName() + ":8020"), new Configuration())
     val path = new Path("/user/" + conf.get("spark.lyr.user.name") + "/gatewayaddr")
     val stream = hdfs.create(path)
     stream.writeBytes(scala.io.Source.fromURL("http://instance-data.us-west-2.compute.internal/latest/meta-data/public-ipv4").mkString)
