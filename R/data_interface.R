@@ -610,6 +610,32 @@ spark_read_source <- function(sc,
   spark_partition_register_df(sc, df, name, repartition, memory)
 }
 
+#' Read from a dynamodb into a Spark temporary view.
+#'
+#' Read from a dynamodb into a Spark temporary view.
+#'
+#' @inheritParams spark_read_csv
+#' @param source A data source capable of reading data.
+#' @param options A list of strings with additional options. See \url{http://spark.apache.org/docs/latest/sql-programming-guide.html#configuration}.
+#'
+#' @family Spark serialization routines
+#'
+#' @export
+spark_read_dynamodb <- function(sc,
+                            name,
+                            source,
+                            options = vector("character"),
+                            overwrite = TRUE,
+                            columns = NULL,
+                            ...) {
+  if (overwrite) spark_remove_table_if_exists(sc, name)
+
+  options <- c(options, "table" = name)
+  df <- spark_data_read_generic(sc, source, "format", options, columns) %>% invoke("load")
+  invoke(df, "createOrReplaceTempView", name)
+  df
+}
+
 #' Writes a Spark DataFrame into a JDBC table
 #'
 #' Writes a Spark DataFrame into a JDBC table.
