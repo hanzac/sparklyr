@@ -338,9 +338,9 @@ start_shell <- function(master,
           ""
         })
         i = i + 1
-        print(config[["sparklyr.gateway.address"]])
+        if (isTRUE(config[["sparklyr.gateway.address"]] == "")) message(".")
       }
-      print("sparklyr.gateway.address is")
+      print("sparklyr.gateway.address is:")
       print(config[["sparklyr.gateway.address"]])
       gatewayAddress <- spark_config_value(config, "sparklyr.gateway.address", "localhost")
       # connect and wait for the service to start
