@@ -623,7 +623,6 @@ spark_read_source <- function(sc,
 #' @export
 spark_read_dynamodb <- function(sc,
                             name,
-                            source,
                             options = vector("character"),
                             overwrite = TRUE,
                             columns = NULL,
@@ -631,7 +630,7 @@ spark_read_dynamodb <- function(sc,
   if (overwrite) spark_remove_table_if_exists(sc, name)
 
   options <- c(options, "table" = name)
-  df <- spark_data_read_generic(sc, source, "format", options, columns) %>% invoke("load")
+  df <- spark_data_read_generic(sc, "org.apache.spark.dynamodb", "format", options, columns) %>% invoke("load")
   invoke(df, "createOrReplaceTempView", name)
   df
 }
