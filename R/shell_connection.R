@@ -338,7 +338,7 @@ start_shell <- function(master,
           ""
         })
         i = i + 1
-        if (isTRUE(config[["sparklyr.gateway.address"]] == "")) message(".")
+        if (isTRUE(config[["sparklyr.gateway.address"]] == "")) cat(".")
       }
       print("sparklyr.gateway.address is:")
       print(config[["sparklyr.gateway.address"]])
